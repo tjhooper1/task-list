@@ -12,11 +12,16 @@ getTodos = () => {
 add = () => {
     let todos = getTodos();
     let task = document.getElementById("task")
-    todos.push(task.value)
-    
-    localStorage.setItem('todo', JSON.stringify(todos));
+    if (task.value === "") {
+        alert("Please enter a valid task");
+    }else{
 
-    task.value = "";
+        todos.push(task.value)
+        
+        localStorage.setItem('todo', JSON.stringify(todos));
+    
+        task.value = "";
+    }
 
     show();
     
