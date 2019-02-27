@@ -1,5 +1,5 @@
 //fetches todos from the local storage database
-let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+// let checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
 
 getTodos = () => {
@@ -11,28 +11,6 @@ getTodos = () => {
     return todos;
 }
 
-function setChecked(key, id) {
-    localStorage.setItem(key, JSON.stringify(id));
-}
-
-function getChecked(id){
-   let trueOrFalse = false;
-   let trueOrFalseStr = localStorage.getItem(id);
-   if (trueOrFalseStr>0) {
-       trueOrFalse = JSON.parse(trueOrFalseStr);
-   }
-   
-   return trueOrFalse;
-}
-
-// function getCheckedTodos(id){
-//     let isChecked;
-//     let isCheckedStr = localStorage.getItem(`checked-todo${id}`);
-//     if (isCheckedStr !== null) {
-//         isChecked = JSON.parse(isCheckedStr);
-//     }
-//     return isChecked;
-// }
 
 //adds todo to the local storage database and then also calls the show() function to display in the UI
 add = () => {
@@ -61,7 +39,7 @@ show = () => {
     let todos = getTodos(); 
     let html = '<h3>to be completed</h3><ul>';
     for(let i = 0; i < todos.length; i++) {
-        html += '<li>' + todos[i] + '<input type="checkbox" class="checkBox'+i+'"><button class="remove" id="' + i  + '">Delete</button></li>';
+        html += '<li>' + todos[i] + '<input name="mycheckbox'+i+'" type="checkbox" class="checkBox"><button class="remove" id="' + i  + '">Delete</button></li>';
         
     };
     html += '</ul>';
@@ -71,28 +49,63 @@ show = () => {
 
     var buttons = document.getElementsByClassName("remove");
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    console.log(checkboxes);
-    
-    
+
     for (let i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].addEventListener("click", function(){
-            console.log(checkboxes[i]);
-            
-            
+        checkboxes[i].addEventListener("click", function() {
             if (checkboxes[i].checked) {
-                checkboxes[i].parentElement.style = "text-decoration: line-through;";
-                checkboxes[i].setAttribute("checked", "true");
-                setChecked(checkboxes[i].classList, checkboxes[i].checked);
-               
-            }else{
-                checkboxes[i].parentElement.style = "text-decoration: none;";
-                checkboxes[i].removeAttribute("checked");
-                setChecked(checkboxes[i].classList, checkboxes[i].checked);
+                checkboxes[i].parentElement.classList.add("done");
+            } else {
+                checkboxes[i].parentElement.classList.remove("done");
             }
-           
         })
+        
     }
 
+    // variable to store our current state
+    var cbstate;
+    
+    // Get the current state from localstorage
+    // State is stored as a JSON string
+    cbstate = JSON.parse(localStorage['CBState'] || '{}');
+
+    // Loop through state array and restore checked 
+    // state for matching elements
+    for(var i in cbstate) {
+    var el = document.querySelector('input[name="' + i + '"]');
+    if (el) el.checked = true;
+        
+    }
+
+    // Get all checkboxes that you want to monitor state for
+    var cb = document.querySelectorAll('.checkBox');  
+    cb.forEach(function(checkbox) {
+        if (checkbox.checked) {
+            checkbox.parentElement.classList.add("done");
+        } 
+    })
+
+
+    // Loop through results and ...
+    for(var i = 0; i < cb.length; i++) {
+
+        //bind click event handler
+        cb[i].addEventListener('click', function(evt) {
+            
+            // If checkboxe is checked then save to state
+            if (this.checked) {
+            cbstate[this.name] = true;
+            
+            }
+
+        // Else remove from state
+            else if (cbstate[this.name]) {
+            delete cbstate[this.name];
+            }
+
+        // Persist state
+            localStorage.CBState = JSON.stringify(cbstate);
+        });
+    }
 
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener("click", remove);      
@@ -105,6 +118,7 @@ show = () => {
 function remove() {
 
     let id = this.getAttribute('id');
+    
     let todos = getTodos();
     
     todos.splice(id, 1);
@@ -121,5 +135,4 @@ show();
 
 
 
-//when I click the checkbox, I want to add that state to the local storage
-//then I want to populate the generated li's with checkboxes with that stored state
+
