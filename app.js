@@ -1,7 +1,6 @@
 //fetches todos from the local storage database
 // let checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
-
 getTodos = () => {
     let todos = [];
     let todosStr =  localStorage.getItem('todo');
@@ -37,9 +36,9 @@ add = () => {
 show = () => {
     
     let todos = getTodos(); 
-    let html = '<h3>to be completed</h3><ul>';
+    let html = '<h3 class="mx-auto" style="width: 200px">to be complete</h3><ul class="list-group">';
     for(let i = 0; i < todos.length; i++) {
-        html += '<li>' + todos[i] + '<input name="'+i+'" type="checkbox" class="checkBox"></li>';
+        html += '<li class="list-group-item">' + todos[i] + '<input name="'+i+'" type="checkbox" class="checkBox ml-10"></li>';
         
     };
     html += '</ul>';
@@ -86,7 +85,6 @@ show = () => {
         } 
     })
 
-
     // Loop through results and ...
     for(var i = 0; i < cb.length; i++) {
 
@@ -114,32 +112,10 @@ show = () => {
     button.addEventListener("click", remove);
 }
 
-//The remove function handles grabbing the id from the current task and using that as a selector to remove it
-//from the local storage database. Additionally, the todos array is spliced to remove that current task from the 
-//array
+//The remove function removes all state from todos and checkboxes and starts fresh
+
 function remove() {
     
-    // var cbstate = JSON.parse(localStorage.getItem('CBState') || '{}');
-    // var cb = document.querySelectorAll('.checkBox');
-    // console.log(cbstate);
-    
-    
-    // let id = this.id;
-    // let todos = getTodos();
-    
-    // todos.splice(id, 1);
-    // localStorage.setItem('todo', JSON.stringify(todos));
-    
-    
-    
-    // delete cbstate[id];
-    // // localStorage.CBState = JSON.stringify(cbstate);
-    // //find a way to reset the state
-    
-    
-    
-    // localStorage.setItem("CBState", JSON.stringify(cbstate));
-    // show();
     let todos = getTodos();
     todos = [];
     localStorage.setItem('todo', JSON.stringify(todos));
